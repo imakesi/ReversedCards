@@ -1,0 +1,4 @@
+Scriptable objects for stuff
+- Number (1-10, 1=Ace, J-Jack, Q-Queen, K-King)
+- Suit (1,2,3,4 - Hearts,Diamonds,Spades,Clubs)
+- Value (1,2,3,4 - (4=Ace give 2))
