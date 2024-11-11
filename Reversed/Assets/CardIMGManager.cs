@@ -6,11 +6,12 @@ public class CardIMGManager : MonoBehaviour
 {
     private SpriteRenderer CardRenderer;
 
-    public Sprite CardIMG;
-    public SpawnManagerScriptableObject CardData;                   
+    public Sprite CardIMG;    
+    public CardData CardObj;                   
     
+
     private void Awake() {
-        CardIMG = Resources.Load<Sprite>("CardAssets/1.1");
+        CardIMG = Resources.Load<Sprite>($"CardAssets/{CardObj.number}.{CardObj.suit}");
         CardRenderer = GetComponent<SpriteRenderer>();
     }
 
