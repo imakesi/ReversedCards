@@ -1,0 +1,22 @@
+How to play: (2P)
+Each person starts with 5 cards
+
+(Max straight length: 5)
+(Max card drawing: 8)
+(Max amount of cards in a set: 4 (do not conjure a new suit and play that))
+
+On your turn, you can either play a set of cards (3 jacks) or a straight of cards (4, 5, 6, has to be 3-5 cards long)
+(straights with the same suit get a 1.5x bonus, round down)
+There's a special straight (J, Q, K) that you can only play once per player per game and deals 8 cards instead of 6 (aces can't wrap around and counter)
+If your opponent plays 3 jacks, and you have the other jack, you can play that jack into the pool to make your opponent draw the cards instead
+If your opponent plays a straight, like a 7, 8, and 9 then you can counter by playing your 10
+If you play 3 fours, and your opponent doesn't have the other four, then they have to draw 3 cards
+2-10s make you draw 1 card each
+Royals are 1.5, round up each
+Aces can either make you draw 3, or give your opponent 2 of your cards each
+Jokers can pair with any cards (except jqk straight) and have you give your opponent 1 of your cards.
+
+Backlog:
+Each turn you can use up your turn to move as many cards as you want in and out of your backlog, which you can't play immediately, but doesn't count towards how many cards you have
+
+Goal is to run out of cards
