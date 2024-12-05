@@ -18,5 +18,6 @@ Jokers can pair with any cards (except jqk straight) and have you give your oppo
 
 Backlog:
 Each turn you can use up your turn to move as many cards as you want in and out of your backlog, which you can't play immediately, but doesn't count towards how many cards you have
+Also backlog is hidden to your opponent but not you
 
 Goal is to run out of cards
