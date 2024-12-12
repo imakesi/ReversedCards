@@ -1,2 +1,4 @@
-Scriptable objects:
- - cool
+for player.cs:
+display pages of 5
+button to go through pages
+and if you have 20 cards stuff you draw goes to your backlog auto

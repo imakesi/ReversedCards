@@ -4,6 +4,8 @@ Each person starts with 5 cards
 (Max straight length: 5)
 (Max card drawing: 8)
 (Max amount of cards in a set: 4 (do not conjure a new suit and play that))
+(Max amount of cards you can have = 20)
+(You can spend your turn moving 5 or less cards to the backlog and you have to have 5 you can't get rid of them all yes)
 
 On your turn, you can either play a set of cards (3 jacks) or a straight of cards (4, 5, 6, has to be 3-5 cards long)
 (straights with the same suit get a 1.5x bonus, round down)
@@ -15,9 +17,5 @@ If you play 3 fours, and your opponent doesn't have the other four, then they ha
 Royals are 1.5, round up each
 Aces can either make you draw 3, or give your opponent 2 of your cards each
 Jokers can pair with any cards (except jqk straight) and have you give your opponent 1 of your cards.
-
-Backlog:
-Each turn you can use up your turn to move as many cards as you want in and out of your backlog, which you can't play immediately, but doesn't count towards how many cards you have
-Also backlog is hidden to your opponent but not you
 
 Goal is to run out of cards

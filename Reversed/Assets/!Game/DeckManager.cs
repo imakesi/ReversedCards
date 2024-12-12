@@ -10,6 +10,9 @@ public class DeckManager : MonoBehaviour
     public GameObject CardPrefab;
     public GameObject PrefabParent;
 
+    public Player Player1;
+    public Player Player2;
+
     public CardData CardObj;
 
     private SpriteRenderer LastCardRenderer;
@@ -22,6 +25,11 @@ public class DeckManager : MonoBehaviour
 
     private void Start() {
         ResetDeck();
+
+        for(int i = 0; i < 5; i++) {
+            GameObject thingydhingy = MakeCard();
+            Player1.AddCard(thingydhingy);
+        }
     }
 
     private void ResetDeck() {
@@ -34,7 +42,7 @@ public class DeckManager : MonoBehaviour
         }
     }
 
-    public void MakeCard() { // runs with button
+    public GameObject MakeCard() { // runs with button
         GameObject NewCard = Instantiate(CardPrefab, Vector3.zero, Quaternion.identity);
         NewCard.transform.SetParent(PrefabParent.transform);
 
@@ -58,5 +66,7 @@ public class DeckManager : MonoBehaviour
         CardObj.number = CardPair[1];
 
         LastCardRenderer = NewCard.GetComponentInChildren<SpriteRenderer>();
+
+        return NewCard;
     }
 }
