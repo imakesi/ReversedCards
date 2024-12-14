@@ -26,9 +26,11 @@ public class DeckManager : MonoBehaviour
     private void Start() {
         ResetDeck();
 
-        for(int i = 0; i < 5; i++) {
-            GameObject thingydhingy = MakeCard();
-            Player1.AddCard(thingydhingy);
+        for(int i = 0; i < 8; i++) {
+            GameObject NewCard1 = MakeCard();
+            Player1.AddCard(NewCard1);
+            GameObject NewCard2 = MakeCard();
+            Player2.AddCard(NewCard2);
         }
     }
 
