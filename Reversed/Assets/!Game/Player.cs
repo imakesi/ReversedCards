@@ -16,6 +16,9 @@ public class Player : MonoBehaviour
         Hand.Add(card);
     }
 
+    public void IncPage() { if(CurrentPage < Mathf.Floor(CurrentPage/5)) { CurrentPage++; } }
+    public void DecPage() { if(CurrentPage > 1) { CurrentPage--; } }
+
     private void DisplayHand() {
         // min = current page number minus 1 times 5 (last page which we don't want to display unless we're on the first page) and then plus one
         // kinda like fibbonacci thing where you go down until 1 ^
@@ -35,15 +38,20 @@ public class Player : MonoBehaviour
         // add cards to RangeMM that should be displayed on page
         for (int i = min; i < min + 5; i++) {
             if (Hand.Count < i) { break; }
-
+            //print(string.Join(",", RangeMM));
             RangeMM.Add(i);
         }
 
         for (int i = 0; i < RangeMM.Count; i++) {
-            print(string.Join(",", RangeMM));
             int MyOtherThing = RangeMM[i];
             GameObject errorpossible = Hand[MyOtherThing];
             errorpossible.transform.position = CardPositions[i].position;
+        }
+
+        if (CurrentPage > 1) {
+            for (int i = min - 5; i < min; i++) {
+                Hand[i].transform.position = new Vector2(10, 10);
+            }
         }
 
         //int Adder = (CurrentPage - 1) * 5;
