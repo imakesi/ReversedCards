@@ -27,32 +27,37 @@ public class Player : MonoBehaviour
         // use indexes and get the transform of the cards in the hand list and move them to 10,10,0
 
 
-        int min;
+        //int min;
 
-        if (CurrentPage > 1) {
-            min = ((CurrentPage - 1) * 5) + 1;
-        } else { min = 0; }
+        //if (CurrentPage > 1) {
+        //    min = ((CurrentPage - 1) * 5) + 1;
+        //} else { min = 0; }
 
-        List<int> RangeMM = new List<int>();
+        //List<int> RangeMM = new List<int>();
 
-        // add cards to RangeMM that should be displayed on page
-        for (int i = min; i < min + 5; i++) {
-            if (Hand.Count < i) { break; }
-            //print(string.Join(",", RangeMM));
-            RangeMM.Add(i);
-        }
+        //// add cards to RangeMM that should be displayed on page
+        //for (int i = min; i < min + 5; i++) {
+        //    if (Hand.Count < i) { break; }
+        //    //print(string.Join(",", RangeMM));
+        //    RangeMM.Add(i);
+        //}
 
-        for (int i = 0; i < RangeMM.Count; i++) {
-            int MyOtherThing = RangeMM[i];
-            GameObject errorpossible = Hand[MyOtherThing];
-            errorpossible.transform.position = CardPositions[i].position;
-        }
+        //for (int i = 0; i < RangeMM.Count; i++) {
+        //    int MyOtherThing = RangeMM[i];
+        //    GameObject errorpossible = Hand[MyOtherThing];
+        //    errorpossible.transform.position = CardPositions[i].position;
+        //}
 
-        if (CurrentPage > 1) {
-            for (int i = min - 5; i < min; i++) {
-                Hand[i].transform.position = new Vector2(10, 10);
-            }
-        }
+        //if (CurrentPage > 1) {
+        //    for (int i = min - 5; i < min; i++) {
+        //        Hand[i].transform.position = new Vector2(10, 10);
+        //    }
+        //} else {
+        //    for (int i = 6; i < 11; i++)
+        //    {
+        //        Hand[i].transform.position = new Vector2(10, 10);
+        //    }
+        //}
 
         //int Adder = (CurrentPage - 1) * 5;
 
@@ -62,6 +67,28 @@ public class Player : MonoBehaviour
         //        Hand[i + Adder].transform.position = CardPositions[i].position;
         //    }
         //}
+        int ForeachCount = 0;
+        bool[] CardPositionsUsed = { false, false, false, false, false };
+        for (int i = 0; i < Hand.Count; i++) {
+            SpriteRenderer CardRenderer = Hand[i].GetComponentInChildren<SpriteRenderer>();
+            if (i > (((CurrentPage) - 1 * 5) + 1) && i <= (CurrentPage * 5)) {
+                foreach (bool j in CardPositionsUsed) {
+                    ForeachCount++;
+                    if(j == false) {
+                        break;
+                    }
+                }
+
+                Vector2 SeperationBecauseErrors = CardPositions[ForeachCount-1].transform.position;
+                //Error with the ForeachCount
+                //FIX IT!!!
+                Hand[i].transform.position = SeperationBecauseErrors;
+
+                CardRenderer.enabled = true;
+            } else {
+                CardRenderer.enabled = false;
+            }
+        }
     }
 
     private void Update() {
