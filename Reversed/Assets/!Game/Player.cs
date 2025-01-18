@@ -16,7 +16,7 @@ public class Player : MonoBehaviour
         Hand.Add(card);
     }
 
-    public void IncPage() { if(CurrentPage < Mathf.Floor(CurrentPage/5)) { CurrentPage++; } }
+    public void IncPage() { if(CurrentPage < Hand.Count/5+1) { CurrentPage++; } }
     public void DecPage() { if(CurrentPage > 1) { CurrentPage--; } }
 
     private void DisplayHand() {
@@ -66,46 +66,59 @@ public class Player : MonoBehaviour
         //        if (i + Adder >= Hand.Count) { break; }
         //        Hand[i + Adder].transform.position = CardPositions[i].position;
         //    }
-        int ForeachCount = 0;
-        bool[] CardPositionsUsed = { false, false, false, false, false };
-        for (int i = 0; i < Hand.Count; i++) {
-            SpriteRenderer CardRenderer = Hand[i].GetComponentInChildren<SpriteRenderer>();
-            if (i > (((CurrentPage) - 1 * 5) + 1) && i <= (CurrentPage * 5)) {
-                //}
-                foreach (bool j in CardPositionsUsed) {
-                    if (j == false) {
-                        break;
-                    }
-                    ForeachCount++;
-                }
+        //int ForeachCount = 0;
+        //bool[] CardPositionsUsed = { false, false, false, false, false };
+        //for (int i = 0; i < Hand.Count; i++) {
+        //    SpriteRenderer CardRenderer = Hand[i].GetComponentInChildren<SpriteRenderer>();
+        //    if (i > (((CurrentPage) - 1 * 5) + 1) && i <= (CurrentPage * 5)) {
+        //        //}
+        //        foreach (bool j in CardPositionsUsed) {
+        //            if (j == false) {
+        //                break;
+        //            }
+        //            ForeachCount++;
+        //        }
 
-                Vector2 VectorPos;
-                if (ForeachCount < CardPositions.Count()) {
-                    VectorPos = CardPositions[ForeachCount].transform.position;
-                    CardPositionsUsed[ForeachCount] = true;
-                } else {
-                    //CardRenderer.enabled = false;
-                    CurrentPage++;
-                    continue;
-                }
-                    
-                Hand[i].transform.position = VectorPos;
+        //        Vector2 VectorPos;
+        //        if (ForeachCount < CardPositions.Count()) {
+        //            VectorPos = CardPositions[ForeachCount].transform.position;
+        //            CardPositionsUsed[ForeachCount] = true;
+        //        } else {
+        //            //CardRenderer.enabled = false;
+        //            CurrentPage++;
+        //            continue;
+        //        }
 
-                CardRenderer.enabled = true;
-                ForeachCount = 0;
-            } else {
-                CardRenderer.enabled = false;
-            }
+        //        Hand[i].transform.position = VectorPos;
+
+        //        CardRenderer.enabled = true;
+        //        print($"ENABLED ABOVE ME {i}");
+        //        ForeachCount = 0;
+        //    } else {
+        //        CardRenderer.enabled = false;
+        //        print($"DISABLED ABOVE ME {i}");
+        //    }
+        //    }
+
+        foreach(GameObject card in Hand) {
+            card.SetActive(false);
+        }
+
+        int firstCardIndex = (CurrentPage - 1) * 5;
+        int lastCardIndex = firstCardIndex + 5;
+        for (int i = firstCardIndex; i < lastCardIndex; i++) {
+            if (i > Hand.Count) { break; }
+            Hand[i].SetActive(true);
         }
     }
 
     private void Update() {
         DisplayHand();
 
-        if(Input.GetKeyDown(PageLast) && CurrentPage > 1) {
-            CurrentPage--;
+        if(Input.GetKeyDown(PageLast)) {
+            DecPage();
         } else if(Input.GetKeyDown(PageNext)) {
-            CurrentPage++;
+            IncPage();
         }
     }
 }
