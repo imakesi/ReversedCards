@@ -17,6 +17,8 @@ public class DeckManager : MonoBehaviour
 
     private SpriteRenderer LastCardRenderer;
 
+    private int CardCount = 15; // DEBUG
+
     public struct CardStruct {
         public CardStruct(int suit, int number) {}
     }
@@ -26,7 +28,7 @@ public class DeckManager : MonoBehaviour
     private void Start() {
         ResetDeck();
 
-        for(int i = 0; i < 20; i++) {
+        for(int i = 0; i < CardCount; i++) {
             GameObject NewCard1 = MakeCard();
             Player1.AddCard(NewCard1);
             GameObject NewCard2 = MakeCard();

@@ -66,25 +66,33 @@ public class Player : MonoBehaviour
         //        if (i + Adder >= Hand.Count) { break; }
         //        Hand[i + Adder].transform.position = CardPositions[i].position;
         //    }
-        //}
         int ForeachCount = 0;
         bool[] CardPositionsUsed = { false, false, false, false, false };
         for (int i = 0; i < Hand.Count; i++) {
             SpriteRenderer CardRenderer = Hand[i].GetComponentInChildren<SpriteRenderer>();
             if (i > (((CurrentPage) - 1 * 5) + 1) && i <= (CurrentPage * 5)) {
+                //}
                 foreach (bool j in CardPositionsUsed) {
-                    ForeachCount++;
-                    if(j == false) {
+                    if (j == false) {
                         break;
                     }
+                    ForeachCount++;
                 }
 
-                Vector2 SeperationBecauseErrors = CardPositions[ForeachCount-1].transform.position;
-                //Error with the ForeachCount
-                //FIX IT!!!
-                Hand[i].transform.position = SeperationBecauseErrors;
+                Vector2 VectorPos;
+                if (ForeachCount < CardPositions.Count()) {
+                    VectorPos = CardPositions[ForeachCount].transform.position;
+                    CardPositionsUsed[ForeachCount] = true;
+                } else {
+                    //CardRenderer.enabled = false;
+                    CurrentPage++;
+                    continue;
+                }
+                    
+                Hand[i].transform.position = VectorPos;
 
                 CardRenderer.enabled = true;
+                ForeachCount = 0;
             } else {
                 CardRenderer.enabled = false;
             }
