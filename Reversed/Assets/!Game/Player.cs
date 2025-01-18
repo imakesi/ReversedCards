@@ -110,6 +110,8 @@ public class Player : MonoBehaviour
             if (i > Hand.Count) { break; }
             Hand[i].SetActive(true);
         }
+
+        // MOVE THEM OT THE SPOT AHGBHUFVWEGH
     }
 
     private void Update() {
