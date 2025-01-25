@@ -16,102 +16,28 @@ public class Player : MonoBehaviour
         Hand.Add(card);
     }
 
-    public void IncPage() { if(CurrentPage < Hand.Count/5+1) { CurrentPage++; } }
+    public void IncPage() {
+        if (Hand.Count % 5 == 0) {
+            if (CurrentPage < Hand.Count / 5) { CurrentPage++; }
+        } else {
+            if (CurrentPage < Hand.Count / 5+1) { CurrentPage++; }
+        }
+    }
     public void DecPage() { if(CurrentPage > 1) { CurrentPage--; } }
 
     private void DisplayHand() {
-        // min = current page number minus 1 times 5 (last page which we don't want to display unless we're on the first page) and then plus one
-        // kinda like fibbonacci thing where you go down until 1 ^
-        // max = min + 4
-        // get range somehow [min, min+1, min+2, min+3, max]
-        // use indexes and get the transform of the cards in the hand list and move them to 10,10,0
-
-
-        //int min;
-
-        //if (CurrentPage > 1) {
-        //    min = ((CurrentPage - 1) * 5) + 1;
-        //} else { min = 0; }
-
-        //List<int> RangeMM = new List<int>();
-
-        //// add cards to RangeMM that should be displayed on page
-        //for (int i = min; i < min + 5; i++) {
-        //    if (Hand.Count < i) { break; }
-        //    //print(string.Join(",", RangeMM));
-        //    RangeMM.Add(i);
-        //}
-
-        //for (int i = 0; i < RangeMM.Count; i++) {
-        //    int MyOtherThing = RangeMM[i];
-        //    GameObject errorpossible = Hand[MyOtherThing];
-        //    errorpossible.transform.position = CardPositions[i].position;
-        //}
-
-        //if (CurrentPage > 1) {
-        //    for (int i = min - 5; i < min; i++) {
-        //        Hand[i].transform.position = new Vector2(10, 10);
-        //    }
-        //} else {
-        //    for (int i = 6; i < 11; i++)
-        //    {
-        //        Hand[i].transform.position = new Vector2(10, 10);
-        //    }
-        //}
-
-        //int Adder = (CurrentPage - 1) * 5;
-
-        //for(int j = 0; j < 5; j++) {
-        //    for(int i = 0; i < 5; i++) {
-        //        if (i + Adder >= Hand.Count) { break; }
-        //        Hand[i + Adder].transform.position = CardPositions[i].position;
-        //    }
-        //int ForeachCount = 0;
-        //bool[] CardPositionsUsed = { false, false, false, false, false };
-        //for (int i = 0; i < Hand.Count; i++) {
-        //    SpriteRenderer CardRenderer = Hand[i].GetComponentInChildren<SpriteRenderer>();
-        //    if (i > (((CurrentPage) - 1 * 5) + 1) && i <= (CurrentPage * 5)) {
-        //        //}
-        //        foreach (bool j in CardPositionsUsed) {
-        //            if (j == false) {
-        //                break;
-        //            }
-        //            ForeachCount++;
-        //        }
-
-        //        Vector2 VectorPos;
-        //        if (ForeachCount < CardPositions.Count()) {
-        //            VectorPos = CardPositions[ForeachCount].transform.position;
-        //            CardPositionsUsed[ForeachCount] = true;
-        //        } else {
-        //            //CardRenderer.enabled = false;
-        //            CurrentPage++;
-        //            continue;
-        //        }
-
-        //        Hand[i].transform.position = VectorPos;
-
-        //        CardRenderer.enabled = true;
-        //        print($"ENABLED ABOVE ME {i}");
-        //        ForeachCount = 0;
-        //    } else {
-        //        CardRenderer.enabled = false;
-        //        print($"DISABLED ABOVE ME {i}");
-        //    }
-        //    }
-
         foreach(GameObject card in Hand) {
             card.SetActive(false);
         }
 
         int firstCardIndex = (CurrentPage - 1) * 5;
         int lastCardIndex = firstCardIndex + 5;
+        int x = 0;
         for (int i = firstCardIndex; i < lastCardIndex; i++) {
-            if (i > Hand.Count) { break; }
+            if (i >= Hand.Count) { break; }
             Hand[i].SetActive(true);
+            Hand[i].transform.position = CardPositions[x++].transform.position;
         }
-
-        // MOVE THEM OT THE SPOT AHGBHUFVWEGH
     }
 
     private void Update() {
