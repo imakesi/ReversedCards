@@ -7,6 +7,7 @@ public class DigitScript : MonoBehaviour
     public int value = 0;
 
     private void Start() {
-        // get sprite renderer, render value from font folder
+        var DigitIMG = Resources.Load<Sprite>($"Sprites/CardsFont/{value}");
+        GetComponent<SpriteRenderer>().sprite = DigitIMG;
     }
 }
