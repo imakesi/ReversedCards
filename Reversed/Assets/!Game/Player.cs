@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -55,21 +56,6 @@ public class Player : MonoBehaviour
         }
     }
 
-    // problem in this function: digit1 setting to 48, digit2 setting to 53, debug.log shows count is fine
-    private void SetDigits()
-    {
-        if (CompareTag("Player1"))
-        {
-            Digit1P1.value = count[0];
-            Digit2P1.value = count[1];
-        }
-        else if (CompareTag("Player2"))
-        {
-            Digit1P2.value = count[0];
-            Digit2P2.value = count[1];
-        }
-    }
-
     private void Update() {
         DisplayHand();
 
@@ -80,14 +66,18 @@ public class Player : MonoBehaviour
         }
 
         count = Hand.Count.ToString();
-        if (count.Length == 1)
-        {
+        if (count.Length == 1) {
             count = $"0{count}";
         }
-        Debug.Log(count);
-        Debug.Log(count[0]);
-        Debug.Log(count[1]);
 
-        SetDigits();
+        count = Int32.Parse(count);
+
+        if (CompareTag("Player1")) {
+            Digit1P1.value = count[0];
+            Digit2P1.value = count[1];
+        } else if (CompareTag("Player2")) {
+            Digit1P2.value = count[0];
+            Digit2P2.value = count[1];
+        }
     }
 }
