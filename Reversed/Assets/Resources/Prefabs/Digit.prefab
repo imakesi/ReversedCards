@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2757087360477748663}
   - component: {fileID: 8617962295755447608}
+  - component: {fileID: 2288538565310560009}
   m_Layer: 0
   m_Name: Digit
   m_TagString: Untagged
@@ -25,9 +26,9 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3692795590397201125}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.7, y: -130.5, z: -3372.549}
-  m_LocalScale: {x: 7.4046183, y: 7.4046183, z: 7.4046183}
+  m_LocalScale: {x: 8.367219, y: 8.367219, z: 8.367219}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -84,3 +85,16 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &2288538565310560009
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3692795590397201125}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c2478036e3a27a4bad8b21b2012a14a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  value: 0

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -11,6 +12,20 @@ public class Player : MonoBehaviour
     [SerializeField] private Transform[] CardPositions;
 
     [SerializeField] private KeyCode PageNext, PageLast;
+
+    public DigitScript Digit1P1;
+    public DigitScript Digit2P1;
+    public DigitScript Digit1P2;
+    public DigitScript Digit2P2;
+
+    private string count = "00";
+
+    private void Start() {
+        Digit1P1 = GameObject.Find("Digit 1 P1").GetComponent<DigitScript>();
+        Digit2P1 = GameObject.Find("Digit 2 P1").GetComponent<DigitScript>();
+        Digit1P2 = GameObject.Find("Digit 1 P2").GetComponent<DigitScript>();
+        Digit2P2 = GameObject.Find("Digit 2 P2").GetComponent<DigitScript>();
+    }
 
     public void AddCard(GameObject card) {
         Hand.Add(card);
@@ -40,6 +55,21 @@ public class Player : MonoBehaviour
         }
     }
 
+    // problem in this function: digit1 setting to 48, digit2 setting to 53, debug.log shows count is fine
+    private void SetDigits()
+    {
+        if (CompareTag("Player1"))
+        {
+            Digit1P1.value = count[0];
+            Digit2P1.value = count[1];
+        }
+        else if (CompareTag("Player2"))
+        {
+            Digit1P2.value = count[0];
+            Digit2P2.value = count[1];
+        }
+    }
+
     private void Update() {
         DisplayHand();
 
@@ -48,5 +78,16 @@ public class Player : MonoBehaviour
         } else if(Input.GetKeyDown(PageNext)) {
             IncPage();
         }
+
+        count = Hand.Count.ToString();
+        if (count.Length == 1)
+        {
+            count = $"0{count}";
+        }
+        Debug.Log(count);
+        Debug.Log(count[0]);
+        Debug.Log(count[1]);
+
+        SetDigits();
     }
 }
