@@ -70,14 +70,15 @@ public class Player : MonoBehaviour
             count = $"0{count}";
         }
 
-        count = Int32.Parse(count);
+        int digdig1 = Int32.Parse(count[0]);
+        int digdig2 = Int32.Parse(count[1]);
 
         if (CompareTag("Player1")) {
-            Digit1P1.value = count[0];
-            Digit2P1.value = count[1];
+            Digit1P1.value = digdig1;
+            Digit2P1.value = digdig2;
         } else if (CompareTag("Player2")) {
-            Digit1P2.value = count[0];
-            Digit2P2.value = count[1];
+            Digit1P2.value = digdig1;
+            Digit2P2.value = digdig2;
         }
     }
 }
