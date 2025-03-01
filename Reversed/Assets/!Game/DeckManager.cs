@@ -17,7 +17,7 @@ public class DeckManager : MonoBehaviour
 
     private SpriteRenderer LastCardRenderer;
 
-    private int CardCount = 5; // DEBUG
+    private int CardCount = 12; // DEBUG
 
     public struct CardStruct {
         public CardStruct(int suit, int number) {}

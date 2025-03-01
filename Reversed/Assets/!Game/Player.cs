@@ -19,8 +19,6 @@ public class Player : MonoBehaviour
     public DigitScript Digit1P2;
     public DigitScript Digit2P2;
 
-    private string count = "00";
-
     private void Start() {
         Digit1P1 = GameObject.Find("Digit 1 P1").GetComponent<DigitScript>();
         Digit2P1 = GameObject.Find("Digit 2 P1").GetComponent<DigitScript>();
@@ -65,20 +63,24 @@ public class Player : MonoBehaviour
             IncPage();
         }
 
-        count = Hand.Count.ToString();
-        if (count.Length == 1) {
-            count = $"0{count}";
-        }
-
-        int digdig1 = Int32.Parse(count[0]);
-        int digdig2 = Int32.Parse(count[1]);
+        int count = Hand.Count;
+        int digdig2 = count % 10;
+        int digdig1 = (count / 10) % 10;
 
         if (CompareTag("Player1")) {
             Digit1P1.value = digdig1;
             Digit2P1.value = digdig2;
+            //if (digdig1 == 1) {
+            //    GameObject.Find("Digit 2 P1").transform.position = new Vector3(16.5f, -128.12f, -3372.37f);
+            //    GameObject.Find("CardsTxt P1").transform.position = new Vector3(35.1f, -128.24f, -3374.01f);
+            //}
         } else if (CompareTag("Player2")) {
             Digit1P2.value = digdig1;
             Digit2P2.value = digdig2;
+            //if (digdig1 == 1) {
+            //    GameObject.Find("Digit 2 P2").transform.position = new Vector3(16.5f, -130.5f, -3372.549f);
+            //    GameObject.Find("CardsTxt P2").transform.position = new Vector3(35.1f, -130.61f, -3374.01f);
+            //}
         }
     }
 }

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class DigitScript : MonoBehaviour
 {
@@ -8,6 +9,6 @@ public class DigitScript : MonoBehaviour
 
     private void Update() {
         Sprite DigitIMG = Resources.Load<Sprite>($"Sprites/CardsFont/{value}");
-        GetComponent<SpriteRenderer>().sprite = DigitIMG;
+        GetComponent<Image>().sprite = DigitIMG;
     }
 }
