@@ -22,8 +22,3 @@ JK : give 1 card (joker can be played as any card but is always give 1 card)
 
 
 If you can continue the hand your opponent played, you can add on your addition and spin the pool back on your opponent, so your opponent has to draw them, not you
-
----
-
-
-(thenamechanger is my commits it's just a visual glitch)
