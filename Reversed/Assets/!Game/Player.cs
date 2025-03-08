@@ -70,17 +70,9 @@ public class Player : MonoBehaviour
         if (CompareTag("Player1")) {
             Digit1P1.value = digdig1;
             Digit2P1.value = digdig2;
-            //if (digdig1 == 1) {
-            //    GameObject.Find("Digit 2 P1").transform.position = new Vector3(16.5f, -128.12f, -3372.37f);
-            //    GameObject.Find("CardsTxt P1").transform.position = new Vector3(35.1f, -128.24f, -3374.01f);
-            //}
         } else if (CompareTag("Player2")) {
             Digit1P2.value = digdig1;
             Digit2P2.value = digdig2;
-            //if (digdig1 == 1) {
-            //    GameObject.Find("Digit 2 P2").transform.position = new Vector3(16.5f, -130.5f, -3372.549f);
-            //    GameObject.Find("CardsTxt P2").transform.position = new Vector3(35.1f, -130.61f, -3374.01f);
-            //}
         }
     }
 }

@@ -7,6 +7,8 @@ using UnityEngine;
 
 public class DeckManager : MonoBehaviour
 {
+    // work on selecting cards //
+
     public GameObject CardPrefab;
     public GameObject PrefabParent;
 
