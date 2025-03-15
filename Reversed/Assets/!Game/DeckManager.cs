@@ -21,9 +21,9 @@ public class DeckManager : MonoBehaviour
 
     private int CardCount = 12; // DEBUG
 
-    public struct CardStruct {
-        public CardStruct(int suit, int number) {}
-    }
+    //public struct CardStruct {
+    //    public CardStruct(int suit, int number) {}
+    //}
 
     private List<int[]> DeckLeft = new List<int[]>(); // int[suit,number] = card data but array
 

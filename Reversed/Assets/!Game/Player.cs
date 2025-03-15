@@ -10,6 +10,8 @@ public class Player : MonoBehaviour
     private List<GameObject> Hand = new List<GameObject>();
     private int CurrentPage = 1;
 
+    public List<GameObject> SelectedCards = new List<GameObject>();
+
     [SerializeField] private Transform[] CardPositions;
 
     [SerializeField] private KeyCode PageNext, PageLast;
@@ -27,6 +29,13 @@ public class Player : MonoBehaviour
     }
 
     public void AddCard(GameObject card) {
+        if (CompareTag("Player1")) {
+            card.gameObject.tag = "Player1";
+        }
+        else if (CompareTag("Player2")) {
+            card.gameObject.tag = "Player2";
+        }
+        
         Hand.Add(card);
     }
 
