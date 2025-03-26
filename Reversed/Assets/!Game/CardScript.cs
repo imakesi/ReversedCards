@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Build;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CardScript : MonoBehaviour {
@@ -8,9 +8,11 @@ public class CardScript : MonoBehaviour {
     public Player player2;
     public Player mainplayer;
 
-    private List<GameObject> thelist;
+    private Transform ogpos;
 
     private void Awake() {
+        ogpos = this.transform;
+
         player1 = GameObject.Find("Player1").GetComponent<Player>();
         player2 = GameObject.Find("Player2").GetComponent<Player>();
 
@@ -19,30 +21,35 @@ public class CardScript : MonoBehaviour {
     }
 
     private void Start() {
-        if (CompareTag("Player1")) {
+        if (CompareTag("Player1"))
+        {
             mainplayer = player1;
         }
-        else if (CompareTag("Player2")) {
+        else if (CompareTag("Player2"))
+        {
             mainplayer = player2;
         }
-
-        thelist = mainplayer.SelectedCards;
     }
 
     private void OnMouseDown() {
-        if(thelist.Contains(this.gameObject)) {
-            thelist.Remove(this.gameObject);
-        } else {
-            thelist.Add(this.gameObject);
+        if(mainplayer.SelectedCards.Contains(this.gameObject)) {
+            mainplayer.SelectedCards.Remove(this.gameObject);
+        } else if(!mainplayer.SelectedCards.Contains(this.gameObject) &&
+            mainplayer.SelectedCards.Count < mainplayer.SelectedLimit) {
+            mainplayer.SelectedCards.Add(this.gameObject);
         }
-    }
 
-    private void Update() {
         SpriteRenderer image = transform.GetComponentInChildren<SpriteRenderer>();
-        if (thelist.Contains(this.gameObject)) {
-            image.color = Color.green;
-        } else
+        if (mainplayer.SelectedCards.Contains(this.gameObject))
         {
+            image.transform.Translate(0, 1, 0);
+            transform.Translate(0, 1, 0);
+            image.color = Color.green;
+        }
+        else
+        {
+            image.transform.position = ogpos.position;
+            transform.position = ogpos.position;
             image.color = Color.white;
         }
     }

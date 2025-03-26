@@ -11,6 +11,7 @@ public class Player : MonoBehaviour
     private int CurrentPage = 1;
 
     public List<GameObject> SelectedCards = new List<GameObject>();
+    public int SelectedLimit = 5;
 
     [SerializeField] private Transform[] CardPositions;
 
