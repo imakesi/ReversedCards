@@ -22,11 +22,21 @@ public class Player : MonoBehaviour
     public DigitScript Digit1P2;
     public DigitScript Digit2P2;
 
+    private GameObject TurnIndi1;
+    private GameObject TurnIndi2;
+
+    public ThirdPartyPlayer PlayerParty3;
+
     private void Start() {
         Digit1P1 = GameObject.Find("Digit 1 P1").GetComponent<DigitScript>();
         Digit2P1 = GameObject.Find("Digit 2 P1").GetComponent<DigitScript>();
         Digit1P2 = GameObject.Find("Digit 1 P2").GetComponent<DigitScript>();
         Digit2P2 = GameObject.Find("Digit 2 P2").GetComponent<DigitScript>();
+
+        TurnIndi1 = GameObject.Find("TurnIndi1");
+        TurnIndi2 = GameObject.Find("TurnIndi2");
+
+        PlayerParty3 = GameObject.Find("Manager").GetComponent<ThirdPartyPlayer>();
     }
 
     public void AddCard(GameObject card) {
@@ -83,6 +93,16 @@ public class Player : MonoBehaviour
         } else if (CompareTag("Player2")) {
             Digit1P2.value = digdig1;
             Digit2P2.value = digdig2;
+        }
+
+        if(PlayerParty3.CurrentTurn == false)
+        {
+            TurnIndi1.SetActive(true);
+            TurnIndi2.SetActive(false);
+        } else
+        {
+            TurnIndi1.SetActive(false);
+            TurnIndi2.SetActive(true);
         }
     }
 }

@@ -7,6 +7,7 @@ public class CardScript : MonoBehaviour {
     public Player player1;
     public Player player2;
     public Player mainplayer;
+    public ThirdPartyPlayer PlayerParty3;
 
     private Transform ogpos;
 
@@ -15,6 +16,7 @@ public class CardScript : MonoBehaviour {
 
         player1 = GameObject.Find("Player1").GetComponent<Player>();
         player2 = GameObject.Find("Player2").GetComponent<Player>();
+        PlayerParty3 = GameObject.Find("Manager").GetComponent<ThirdPartyPlayer>();
 
         if(player1 == null) { print("player1 is dead"); }
         if(player2 == null) { print("player2 is dead"); }
@@ -32,6 +34,12 @@ public class CardScript : MonoBehaviour {
     }
 
     private void OnMouseDown() {
+        if((!PlayerParty3.CurrentTurn && mainplayer == player2)
+            || (PlayerParty3.CurrentTurn && mainplayer == player1))
+        {
+            return;
+        }
+
         if(mainplayer.SelectedCards.Contains(this.gameObject)) {
             mainplayer.SelectedCards.Remove(this.gameObject);
         } else if(!mainplayer.SelectedCards.Contains(this.gameObject) &&
@@ -42,15 +50,18 @@ public class CardScript : MonoBehaviour {
         SpriteRenderer image = transform.GetComponentInChildren<SpriteRenderer>();
         if (mainplayer.SelectedCards.Contains(this.gameObject))
         {
-            image.transform.Translate(0, 1, 0);
-            transform.Translate(0, 1, 0);
-            image.color = Color.green;
+            int changer = 1;
+            if(mainplayer == player1)
+            {
+                changer = -1;
+            }
+            image.transform.Translate(0, changer, 0);
+            transform.Translate(0, changer, 0);
         }
         else
         {
             image.transform.position = ogpos.position;
             transform.position = ogpos.position;
-            image.color = Color.white;
         }
     }
 }
