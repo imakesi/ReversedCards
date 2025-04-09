@@ -18,4 +18,7 @@ Royals are 1.5, round up each
 Aces can either make you draw 3, or give your opponent 2 of your cards each
 Jokers can pair with any cards (except jqk straight) and have you give your opponent 1 of your cards.
 
+Destroy one card when it's your turn
+maybe like 0.75x the card amounts round up the cards because this increases incredibly fast
+
 Goal is to run out of cards

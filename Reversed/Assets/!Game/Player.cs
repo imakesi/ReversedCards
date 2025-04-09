@@ -74,6 +74,56 @@ public class Player : MonoBehaviour
         }
     }
 
+    public void PlayHand() {
+        if (PlayerParty3.CurrentTurn == false && CompareTag("Player1") ||
+            PlayerParty3.CurrentTurn == true && CompareTag("Player2")) {
+            // if our turn, then use our selectedcards
+            bool compatible = true;
+            GameObject currentcard;
+            int lastnumber = -1;
+            for(int i = 0; i < SelectedCards.Count; i++) {
+                currentcard = SelectedCards[i];
+                CardIMGManager curmanage = currentcard.GetComponentInChildren<CardIMGManager>();
+                CardData curdata = curmanage.CardObj;
+
+                if (lastnumber != -1) {
+                    if (lastnumber != curdata.number && curdata.number-1 != lastnumber) {
+                        compatible = false;
+                        print("incompatible");
+                        break;
+                    }
+                }
+                lastnumber = curdata.number;
+            }
+
+            if(compatible) {
+                // score the played hand
+
+                float score = 0;
+                for(int i = 0; i < SelectedCards.Count; i++) {
+                    currentcard = SelectedCards[i];
+                    CardIMGManager curmanage = currentcard.GetComponentInChildren<CardIMGManager>();
+                    CardData curdata = curmanage.CardObj;
+                    if(curdata.number < 11 && curdata.number > 1) {
+                        // 2-10
+                        score += 0.5f;
+                    } else if(curdata.number > 10) {
+                        // face card
+                        score += 1f;
+                    } else if(curdata.number == 1) {
+                        // ace
+                        score += 2f;
+                    }
+                }
+
+                score = MathF.Round(score);
+                print(score);
+            }
+        }
+
+        PlayerParty3.SwitchTurn();
+    }
+
     private void Update() {
         DisplayHand();
 
@@ -106,3 +156,16 @@ public class Player : MonoBehaviour
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+// DOUG DOT PNG
