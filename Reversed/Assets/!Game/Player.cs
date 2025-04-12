@@ -104,6 +104,12 @@ public class Player : MonoBehaviour
                     currentcard = SelectedCards[i];
                     CardIMGManager curmanage = currentcard.GetComponentInChildren<CardIMGManager>();
                     CardData curdata = curmanage.CardObj;
+
+                    // ace -> 13?
+                    // 4 -> 5?
+
+                    print($"i: {i}, curdata number: {curdata.number}");
+
                     if(curdata.number < 11 && curdata.number > 1) {
                         // 2-10
                         score += 0.5f;
@@ -117,7 +123,7 @@ public class Player : MonoBehaviour
                 }
 
                 score = MathF.Round(score);
-                print(score);
+                print($"scored hand: {score}");
             }
         }
 
