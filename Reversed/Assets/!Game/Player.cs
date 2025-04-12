@@ -26,7 +26,9 @@ public class Player : MonoBehaviour
     private GameObject TurnIndi2;
 
     public ThirdPartyPlayer PlayerParty3;
-
+    public DeckManager ManagerOfDeck;
+    public Player player1;
+    public Player player2;
     private void Start() {
         Digit1P1 = GameObject.Find("Digit 1 P1").GetComponent<DigitScript>();
         Digit2P1 = GameObject.Find("Digit 2 P1").GetComponent<DigitScript>();
@@ -80,54 +82,79 @@ public class Player : MonoBehaviour
             // if our turn, then use our selectedcards
             bool compatible = true;
             GameObject currentcard;
-            int lastnumber = -1;
-            for(int i = 0; i < SelectedCards.Count; i++) {
-                currentcard = SelectedCards[i];
-                CardIMGManager curmanage = currentcard.GetComponentInChildren<CardIMGManager>();
-                CardData curdata = curmanage.CardObj;
 
-                if (lastnumber != -1) {
-                    if (lastnumber != curdata.number && curdata.number-1 != lastnumber) {
-                        compatible = false;
-                        print("incompatible");
-                        break;
-                    }
-                }
-                lastnumber = curdata.number;
+            List<int> dataNumbers = new List<int>();
+            List<int> dataSuits = new List<int>();
+            for(int i = 0; i < SelectedCards.Count; i++) {
+                //currentcard = SelectedCards[i];
+                //CardIMGManager curmanage = currentcard.GetComponentInChildren<CardIMGManager>();
+                //CardData curdata = curmanage.CardObj;
+
+                // get texture?
+                currentcard = SelectedCards[i];
+                SpriteRenderer currenderer = currentcard.GetComponentInChildren<SpriteRenderer>();
+                int dataNumber = Int32.Parse(currenderer.sprite.name.Split(".")[0]);
+                int dataSuit = Int32.Parse(currenderer.sprite.name.Split(".")[1]);
+                dataNumbers.Add(dataNumber);
+                dataSuits.Add(dataSuit);
             }
 
-            if(compatible) {
+            if (!(dataNumbers.Distinct().Count() == 1) && !(dataSuits.Distinct().Count() == 1)) {
+                compatible = false;
+            }
+
+            if (compatible) {
                 // score the played hand
 
                 float score = 0;
-                for(int i = 0; i < SelectedCards.Count; i++) {
+                for (int i = 0; i < SelectedCards.Count; i++) {
+                    //currentcard = SelectedCards[i];
+                    //CardIMGManager curmanage = currentcard.GetComponentInChildren<CardIMGManager>();
+                    //CardData curdata = curmanage.CardObj;
+
+                    // get texture?
                     currentcard = SelectedCards[i];
-                    CardIMGManager curmanage = currentcard.GetComponentInChildren<CardIMGManager>();
-                    CardData curdata = curmanage.CardObj;
+                    SpriteRenderer currenderer = currentcard.GetComponentInChildren<SpriteRenderer>();
+                    int dataNumber = Int32.Parse(currenderer.sprite.name.Split(".")[0]);
 
-                    // ace -> 13?
-                    // 4 -> 5?
-
-                    print($"i: {i}, curdata number: {curdata.number}");
-
-                    if(curdata.number < 11 && curdata.number > 1) {
+                    if (dataNumber < 11 && dataNumber > 1)
+                    {
                         // 2-10
                         score += 0.5f;
-                    } else if(curdata.number > 10) {
+                    }
+                    else if (dataNumber > 10)
+                    {
                         // face card
                         score += 1f;
-                    } else if(curdata.number == 1) {
+                    }
+                    else if (dataNumber == 1)
+                    {
                         // ace
                         score += 2f;
                     }
                 }
 
-                score = MathF.Round(score);
+                score = MathF.Ceiling(score);
                 print($"scored hand: {score}");
+
+                if (CompareTag("Player1"))
+                {
+                    for (int i = 0; i < score; i++)
+                    {
+                        player2.AddCard(ManagerOfDeck.MakeCard());
+                    }
+                }
+                else if (CompareTag("Player2"))
+                {
+                    for (int i = 0; i < score; i++)
+                    {
+                        player1.AddCard(ManagerOfDeck.MakeCard());
+                    }
+                }
+                   
+                PlayerParty3.SwitchTurn();
             }
         }
-
-        PlayerParty3.SwitchTurn();
     }
 
     private void Update() {

@@ -1136,6 +1136,9 @@ MonoBehaviour:
   Digit1P2: {fileID: 0}
   Digit2P2: {fileID: 0}
   PlayerParty3: {fileID: 0}
+  ManagerOfDeck: {fileID: 1377495464}
+  player1: {fileID: 605598827}
+  player2: {fileID: 1187557922}
 --- !u!4 &605598828
 Transform:
   m_ObjectHideFlags: 0
@@ -2353,6 +2356,9 @@ MonoBehaviour:
   Digit1P2: {fileID: 0}
   Digit2P2: {fileID: 0}
   PlayerParty3: {fileID: 0}
+  ManagerOfDeck: {fileID: 1377495464}
+  player1: {fileID: 605598827}
+  player2: {fileID: 1187557922}
 --- !u!4 &1187557923
 Transform:
   m_ObjectHideFlags: 0

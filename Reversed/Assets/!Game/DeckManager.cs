@@ -48,7 +48,7 @@ public class DeckManager : MonoBehaviour
         }
     }
 
-    public GameObject MakeCard() { // runs with button
+    public GameObject MakeCard() {
         GameObject NewCard = Instantiate(CardPrefab, Vector3.zero, Quaternion.identity);
         NewCard.transform.SetParent(PrefabParent.transform);
 
