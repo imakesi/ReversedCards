@@ -33,7 +33,7 @@ public class CardScript : MonoBehaviour {
         }
     }
 
-    private void OnMouseDown() {
+    public void OnMouseDown() {
         if((!PlayerParty3.CurrentTurn && mainplayer == player2)
             || (PlayerParty3.CurrentTurn && mainplayer == player1))
         {

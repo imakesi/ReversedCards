@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System;
 using UnityEngine;
+using Unity.Mathematics;
 
 public class Player : MonoBehaviour
 {
@@ -16,6 +17,8 @@ public class Player : MonoBehaviour
     [SerializeField] private Transform[] CardPositions;
 
     [SerializeField] private KeyCode PageNext, PageLast;
+
+    private int maxscore = 8; // the maximum score you can get
 
     public DigitScript Digit1P1;
     public DigitScript Digit2P1;
@@ -81,11 +84,12 @@ public class Player : MonoBehaviour
             PlayerParty3.CurrentTurn == true && CompareTag("Player2")) {
             // if our turn, then use our selectedcards
             bool compatible = true;
+            bool straightcompatible = true;
             GameObject currentcard;
 
             List<int> dataNumbers = new List<int>();
             List<int> dataSuits = new List<int>();
-            for(int i = 0; i < SelectedCards.Count; i++) {
+            for (int i = 0; i < SelectedCards.Count; i++) {
                 //currentcard = SelectedCards[i];
                 //CardIMGManager curmanage = currentcard.GetComponentInChildren<CardIMGManager>();
                 //CardData curdata = curmanage.CardObj;
@@ -99,11 +103,36 @@ public class Player : MonoBehaviour
                 dataSuits.Add(dataSuit);
             }
 
-            if (!(dataNumbers.Distinct().Count() == 1) && !(dataSuits.Distinct().Count() == 1)) {
+            dataNumbers = dataNumbers.OrderBy(num => num).ToList();
+
+            // logic for straights
+            int lastint = -1;
+            for (int i = 0; i < dataNumbers.Count; i++) {
+                if (lastint != -1) {
+                    if (!(dataNumbers[i] == lastint - 1 ||
+                        dataNumbers[i] == lastint + 1)) {
+                        straightcompatible = false;
+                    }
+                }
+                lastint = dataNumbers[i];
+            }
+            // pretty buggy
+            //bool straightboost = false;
+            //if(straightcompatible) {
+            //    // this hand is a straight and not 1 card
+            //    print("wow you just played a straight");
+            //    if(dataSuits.Distinct().Count() == 1) {
+            //        // all the suits are the same
+            //        straightboost = true;
+            //    }
+            //}
+
+            // logic for pairs 1-4
+            if (!(dataNumbers.Distinct().Count() == 1)) {
                 compatible = false;
             }
 
-            if (compatible) {
+            if (compatible || straightcompatible) {
                 // score the played hand
 
                 float score = 0;
@@ -134,9 +163,17 @@ public class Player : MonoBehaviour
                     }
                 }
 
+                // pretty buggy straightboost
+                //if(straightboost) {
+                //    score *= 2;
+                //}
+
+                if(score > maxscore) { score = maxscore; }
+
                 score = MathF.Ceiling(score);
                 print($"scored hand: {score}");
 
+                // add cards to the other side
                 if (CompareTag("Player1"))
                 {
                     for (int i = 0; i < score; i++)
@@ -151,8 +188,16 @@ public class Player : MonoBehaviour
                         player1.AddCard(ManagerOfDeck.MakeCard());
                     }
                 }
-                   
+
                 PlayerParty3.SwitchTurn();
+
+                // deselect selected cards
+
+                for (int i = 0; i < SelectedCards.Count; i++)
+                {
+                    CardScript cardScript = SelectedCards[i].GetComponent<CardScript>();
+                    cardScript.OnMouseDown(); // toggle selection
+                }
             }
         }
     }
