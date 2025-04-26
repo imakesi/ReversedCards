@@ -9,9 +9,11 @@ public class CardScript : MonoBehaviour {
     public Player mainplayer;
     public ThirdPartyPlayer PlayerParty3;
 
-    private Transform ogpos;
+    public Transform ogpos;
+    public SpriteRenderer image;
 
     private void Awake() {
+        image = transform.GetComponentInChildren<SpriteRenderer>();
         ogpos = this.transform;
 
         player1 = GameObject.Find("Player1").GetComponent<Player>();
@@ -47,7 +49,6 @@ public class CardScript : MonoBehaviour {
             mainplayer.SelectedCards.Add(this.gameObject);
         }
 
-        SpriteRenderer image = transform.GetComponentInChildren<SpriteRenderer>();
         if (mainplayer.SelectedCards.Contains(this.gameObject))
         {
             int changer = 1;

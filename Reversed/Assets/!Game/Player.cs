@@ -27,6 +27,8 @@ public class Player : MonoBehaviour
 
     private GameObject TurnIndi1;
     private GameObject TurnIndi2;
+    private GameObject PlayHand1;
+    private GameObject PlayHand2;
 
     public ThirdPartyPlayer PlayerParty3;
     public DeckManager ManagerOfDeck;
@@ -40,6 +42,8 @@ public class Player : MonoBehaviour
 
         TurnIndi1 = GameObject.Find("TurnIndi1");
         TurnIndi2 = GameObject.Find("TurnIndi2");
+        PlayHand1 = GameObject.Find("PlayHand1");
+        PlayHand2 = GameObject.Find("PlayHand2");
 
         PlayerParty3 = GameObject.Find("Manager").GetComponent<ThirdPartyPlayer>();
     }
@@ -79,7 +83,23 @@ public class Player : MonoBehaviour
         }
     }
 
+    private void ShiftCards() {
+        // go through every card in hand
+        // if card has no children, then destroy it and move every card over
+
+        GameObject currentcard;
+        for (int i = 0; i < Hand.Count; i++) {
+            currentcard = Hand[i];
+
+            if(currentcard.transform.childCount < 1) {
+                Destroy(currentcard);
+            }
+
+            // shift them all over
+        }
+    }
     public void PlayHand() {
+
         if (PlayerParty3.CurrentTurn == false && CompareTag("Player1") ||
             PlayerParty3.CurrentTurn == true && CompareTag("Player2")) {
             // if our turn, then use our selectedcards
@@ -196,8 +216,11 @@ public class Player : MonoBehaviour
                 for (int i = 0; i < SelectedCards.Count; i++)
                 {
                     CardScript cardScript = SelectedCards[i].GetComponent<CardScript>();
-                    cardScript.OnMouseDown(); // toggle selection
+                    //cardScript.image.transform.position = cardScript.ogpos.position;
+                    //cardScript.transform.position = cardScript.ogpos.position;
+                    Destroy(cardScript.transform.GetChild(0)); // destroy image
                 }
+                ShiftCards();
             }
         }
     }
@@ -223,14 +246,21 @@ public class Player : MonoBehaviour
             Digit2P2.value = digdig2;
         }
 
+        print("it's " + PlayerParty3.CurrentTurn);
         if(PlayerParty3.CurrentTurn == false)
         {
             TurnIndi1.SetActive(true);
             TurnIndi2.SetActive(false);
+            PlayHand1.SetActive(true);
+            PlayHand2.SetActive(false);
+            print("it's player 1");
         } else
         {
             TurnIndi1.SetActive(false);
             TurnIndi2.SetActive(true);
+            PlayHand1.SetActive(false);
+            PlayHand2.SetActive(true);
+            print("it's player 2, the sequel");
         }
     }
 }
