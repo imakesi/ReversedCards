@@ -83,21 +83,26 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void ShiftCards() {
-        // go through every card in hand
-        // if card has no children, then destroy it and move every card over
+    //private void ShiftCards() {
+    //    // go through every card in hand
+    //    // if card has no children, then destroy it and move every card over
 
-        GameObject currentcard;
-        for (int i = 0; i < Hand.Count; i++) {
-            currentcard = Hand[i];
+    //    GameObject currentcard;
+    //    int offset = 0;
+    //    for (int i = 0; i < Hand.Count; i++) {
+    //        currentcard = Hand[i];
 
-            if(currentcard.transform.childCount < 1) {
-                Destroy(currentcard);
-            }
+    //        if(currentcard.transform.childCount < 1) {
+    //            Destroy(currentcard);
+    //            offset++;
+    //        }
 
-            // shift them all over
-        }
-    }
+    //        // shift them all over
+
+    //        int posIndex = (i % 5) - 1;
+            
+    //    }
+    //}
     public void PlayHand() {
 
         if (PlayerParty3.CurrentTurn == false && CompareTag("Player1") ||
@@ -116,7 +121,7 @@ public class Player : MonoBehaviour
 
                 // get texture?
                 currentcard = SelectedCards[i];
-                SpriteRenderer currenderer = currentcard.GetComponentInChildren<SpriteRenderer>();
+                SpriteRenderer currenderer = currentcard.GetComponentInChildren<SpriteRenderer>(); // error, destroyed already
                 int dataNumber = Int32.Parse(currenderer.sprite.name.Split(".")[0]);
                 int dataSuit = Int32.Parse(currenderer.sprite.name.Split(".")[1]);
                 dataNumbers.Add(dataNumber);
@@ -193,19 +198,44 @@ public class Player : MonoBehaviour
                 score = MathF.Ceiling(score);
                 print($"scored hand: {score}");
 
+                string target = null;
+
                 // add cards to the other side
                 if (CompareTag("Player1"))
                 {
-                    for (int i = 0; i < score; i++)
-                    {
-                        player2.AddCard(ManagerOfDeck.MakeCard());
-                    }
+                    //for (int i = 0; i < score; i++)
+                    //{
+                    //    player2.AddCard(ManagerOfDeck.MakeCard());
+                    //}
+                    target = "player2";
                 }
                 else if (CompareTag("Player2"))
                 {
-                    for (int i = 0; i < score; i++)
+                    //for (int i = 0; i < score; i++)
+                    //{
+                    //    player1.AddCard(ManagerOfDeck.MakeCard());
+                    //}
+                    target = "player1";
+                }
+
+                // change target with reverse mechanic
+                // find if other player can use mechanic
+                // if so, switch turn without adding cards just yet
+                // if they decide to use the mechanic, give cards to original attacking player and don't switch turns
+                // if not, give them the cards and switch turns normally
+                // special information thing potentially
+
+                for(int i = 0; i < score; i++)
+                {
+                    if(target == "player1")
                     {
                         player1.AddCard(ManagerOfDeck.MakeCard());
+                    } else if(target == "player2")
+                    {
+                        player2.AddCard(ManagerOfDeck.MakeCard());
+                    } else
+                    {
+                        print("no target");
                     }
                 }
 
@@ -213,14 +243,25 @@ public class Player : MonoBehaviour
 
                 // deselect selected cards
 
+                List<GameObject> destroyLater = new List<GameObject>();
                 for (int i = 0; i < SelectedCards.Count; i++)
                 {
                     CardScript cardScript = SelectedCards[i].GetComponent<CardScript>();
                     //cardScript.image.transform.position = cardScript.ogpos.position;
                     //cardScript.transform.position = cardScript.ogpos.position;
-                    Destroy(cardScript.transform.GetChild(0)); // destroy image
+                    Hand.Remove(SelectedCards[i]);
+                    destroyLater.Add(SelectedCards[i]);
+                    GameObject destroyThis = cardScript.gameObject;
+                    if(destroyThis == null) { print("card " + i + " is a spoooky ghost"); }
+                    Destroy(destroyThis);
                 }
-                ShiftCards();
+
+                for(int i = 0; i < destroyLater.Count; i++)
+                {
+                    SelectedCards.Remove(destroyLater[i]);
+                }
+                destroyLater.Clear();
+                CurrentPage = 1;
             }
         }
     }
