@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using System;
 using UnityEngine;
 using Unity.Mathematics;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
@@ -280,9 +281,15 @@ public class Player : MonoBehaviour
         int digdig1 = (count / 10) % 10;
 
         if (CompareTag("Player1")) {
+            if (Hand.Count == 0) {
+                SceneManager.LoadScene("WinPlayer1", LoadSceneMode.Single);
+            }
             Digit1P1.value = digdig1;
             Digit2P1.value = digdig2;
         } else if (CompareTag("Player2")) {
+            if (Hand.Count == 0) {
+                SceneManager.LoadScene("WinPlayer2", LoadSceneMode.Single);
+            }
             Digit1P2.value = digdig1;
             Digit2P2.value = digdig2;
         }
