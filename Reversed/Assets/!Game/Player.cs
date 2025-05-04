@@ -21,9 +21,12 @@ public class Player : MonoBehaviour
 
     public int maxscore = 8; // the maximum score you can get
 
-    public float RegularCard = 0.75f;
+    public float RegularCard = 0.5f;
     public float FaceCard = 1f;
     public float AceCard = 2f;
+
+    public bool CanJQK = true;
+    public float JQKPair = 6f;
 
     public DigitScript Digit1P1;
     public DigitScript Digit2P1;
@@ -88,26 +91,6 @@ public class Player : MonoBehaviour
         }
     }
 
-    //private void ShiftCards() {
-    //    // go through every card in hand
-    //    // if card has no children, then destroy it and move every card over
-
-    //    GameObject currentcard;
-    //    int offset = 0;
-    //    for (int i = 0; i < Hand.Count; i++) {
-    //        currentcard = Hand[i];
-
-    //        if(currentcard.transform.childCount < 1) {
-    //            Destroy(currentcard);
-    //            offset++;
-    //        }
-
-    //        // shift them all over
-
-    //        int posIndex = (i % 5) - 1;
-            
-    //    }
-    //}
     public void PlayHand() {
 
         if (PlayerParty3.CurrentTurn == false && CompareTag("Player1") ||
@@ -131,6 +114,12 @@ public class Player : MonoBehaviour
                 int dataSuit = Int32.Parse(currenderer.sprite.name.Split(".")[1]);
                 dataNumbers.Add(dataNumber);
                 dataSuits.Add(dataSuit);
+            }
+
+            bool flushcompatible = false;
+            if(dataSuits.Distinct().Count() == 1 &&
+            SelectedCards.Count >= 4) {
+                flushcompatible = true;
             }
 
             dataNumbers = dataNumbers.OrderBy(num => num).ToList();
@@ -162,9 +151,10 @@ public class Player : MonoBehaviour
                 compatible = false;
             }
 
-            if (compatible || straightcompatible) {
+            if (compatible || straightcompatible || flushcompatible) {
                 // score the played hand
 
+                string checkJQK = "";
                 float score = 0;
                 for (int i = 0; i < SelectedCards.Count; i++) {
                     //currentcard = SelectedCards[i];
@@ -175,6 +165,10 @@ public class Player : MonoBehaviour
                     currentcard = SelectedCards[i];
                     SpriteRenderer currenderer = currentcard.GetComponentInChildren<SpriteRenderer>();
                     int dataNumber = Int32.Parse(currenderer.sprite.name.Split(".")[0]);
+
+                    if(dataNumber == 11) { checkJQK += "J"; }
+                    if(dataNumber == 12) { checkJQK += "Q"; }
+                    if(dataNumber == 13) { checkJQK += "K"; }
 
                     if (dataNumber < 11 && dataNumber > 1)
                     {
@@ -198,6 +192,7 @@ public class Player : MonoBehaviour
                 //    score *= 2;
                 //}
 
+                if(checkJQK == "JQK" && CanJQK) { score = JQKPair; CanJQK = false; }
                 if(score > maxscore) { score = maxscore; }
 
                 score = MathF.Ceiling(score);
