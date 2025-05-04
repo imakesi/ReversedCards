@@ -1131,6 +1131,10 @@ MonoBehaviour:
   - {fileID: 1649329772}
   PageNext: 101
   PageLast: 113
+  maxscore: 8
+  RegularCard: 0.75
+  FaceCard: 1
+  AceCard: 2
   Digit1P1: {fileID: 0}
   Digit2P1: {fileID: 0}
   Digit1P2: {fileID: 0}
@@ -2434,6 +2438,10 @@ MonoBehaviour:
   - {fileID: 1881762086}
   PageNext: 112
   PageLast: 105
+  maxscore: 8
+  RegularCard: 0.75
+  FaceCard: 1
+  AceCard: 2
   Digit1P1: {fileID: 0}
   Digit2P1: {fileID: 0}
   Digit1P2: {fileID: 0}
@@ -2974,7 +2982,7 @@ GameObject:
   - component: {fileID: 1484559642}
   - component: {fileID: 1484559643}
   m_Layer: 0
-  m_Name: Doug
+  m_Name: doug.png
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

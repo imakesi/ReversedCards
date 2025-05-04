@@ -19,7 +19,11 @@ public class Player : MonoBehaviour
 
     [SerializeField] private KeyCode PageNext, PageLast;
 
-    private int maxscore = 8; // the maximum score you can get
+    public int maxscore = 8; // the maximum score you can get
+
+    public float RegularCard = 0.75f;
+    public float FaceCard = 1f;
+    public float AceCard = 2f;
 
     public DigitScript Digit1P1;
     public DigitScript Digit2P1;
@@ -175,17 +179,17 @@ public class Player : MonoBehaviour
                     if (dataNumber < 11 && dataNumber > 1)
                     {
                         // 2-10
-                        score += 0.5f;
+                        score += RegularCard;
                     }
                     else if (dataNumber > 10)
                     {
                         // face card
-                        score += 1f;
+                        score += FaceCard;
                     }
                     else if (dataNumber == 1)
                     {
                         // ace
-                        score += 2f;
+                        score += AceCard;
                     }
                 }
 
