@@ -118,7 +118,7 @@ public class Player : MonoBehaviour
 
             bool flushcompatible = false;
             if(dataSuits.Distinct().Count() == 1 &&
-            SelectedCards.Count >= 4) {
+            SelectedCards.Count == 5) {
                 flushcompatible = true;
             }
 
