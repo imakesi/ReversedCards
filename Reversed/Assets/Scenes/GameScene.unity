@@ -1132,9 +1132,11 @@ MonoBehaviour:
   PageNext: 101
   PageLast: 113
   maxscore: 8
-  RegularCard: 0.75
+  RegularCard: 0.5
   FaceCard: 1
   AceCard: 2
+  CanJQK: 1
+  JQKPair: 6
   Digit1P1: {fileID: 0}
   Digit2P1: {fileID: 0}
   Digit1P2: {fileID: 0}
@@ -2439,9 +2441,11 @@ MonoBehaviour:
   PageNext: 112
   PageLast: 105
   maxscore: 8
-  RegularCard: 0.75
+  RegularCard: 0.5
   FaceCard: 1
   AceCard: 2
+  CanJQK: 1
+  JQKPair: 6
   Digit1P1: {fileID: 0}
   Digit2P1: {fileID: 0}
   Digit1P2: {fileID: 0}

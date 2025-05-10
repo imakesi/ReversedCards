@@ -22,11 +22,6 @@ public class ThirdPartyPlayer : MonoBehaviour
     }
     public void SwitchTurn()
     {
-        print("Number 1 " + CurrentTurn);
-        if (CurrentTurn == false) { CurrentTurn = true; }
-        else if (CurrentTurn == true) { CurrentTurn = false; }
-        print("number 9 large " + CurrentTurn);
-        //CurrentTurn = true;
-        //print("wheee");
+        CurrentTurn = !CurrentTurn;
     }
 }

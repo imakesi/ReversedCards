@@ -6,6 +6,7 @@ using System;
 using UnityEngine;
 using Unity.Mathematics;
 using UnityEngine.SceneManagement;
+using System.Net.Mail;
 
 public class Player : MonoBehaviour
 {
@@ -27,6 +28,8 @@ public class Player : MonoBehaviour
 
     public bool CanJQK = true;
     public float JQKPair = 6f;
+
+    private bool straightboost = false;
 
     public DigitScript Digit1P1;
     public DigitScript Digit2P1;
@@ -91,6 +94,61 @@ public class Player : MonoBehaviour
         }
     }
 
+    public bool CanReverse(List<GameObject> cards, List<int> datanum, List<int> datasuit) {
+        // change target with reverse mechanic
+        // find if other player can use mechanic
+        // if so, switch turn without adding cards just yet
+        // if they decide to use the mechanic, give cards to original attacking player and don't switch turns
+        // if not, give them the cards and switch turns normally
+        // special information thing potentially
+
+        bool canReverse = false;
+        string mode = "";
+
+        // logic for straights
+        bool straightcompatible = true;
+        int lastint = -1;
+        for (int i = 0; i < datanum.Count; i++)
+        {
+            if (lastint != -1)
+            {
+                if (!(datanum[i] == lastint - 1 ||
+                    datanum[i] == lastint + 1))
+                {
+                    straightcompatible = false;
+                }
+            }
+            lastint = datanum[i];
+        }
+        if (SelectedCards.Count < 3)
+        {
+            straightcompatible = false;
+        }
+
+        if (datanum.Distinct().Count() == 1) {
+            mode = "match";
+        } else if(datasuit.Distinct().Count() == 1 &&
+                  cards.Count == 5) {
+            mode = "flush";
+        } else if(straightcompatible) {
+            mode = "straight";
+        }
+
+        for (int i = 0; i < cards.Count; i++) {
+            if(mode == "match") {
+                // check compatibility
+            } else if(mode == "flush") {
+                // maybe include reversing, maybe not
+            } else if(mode == "straight") {
+                // check if you can add on without breaking the straight
+            } else {
+                print("no mode");
+            }
+        }
+
+        return canReverse;
+    }
+
     public void PlayHand() {
 
         if (PlayerParty3.CurrentTurn == false && CompareTag("Player1") ||
@@ -135,16 +193,14 @@ public class Player : MonoBehaviour
                 }
                 lastint = dataNumbers[i];
             }
-            // pretty buggy
-            //bool straightboost = false;
-            //if(straightcompatible) {
-            //    // this hand is a straight and not 1 card
-            //    print("wow you just played a straight");
-            //    if(dataSuits.Distinct().Count() == 1) {
-            //        // all the suits are the same
-            //        straightboost = true;
-            //    }
-            //}
+
+            if(SelectedCards.Count < 3) {
+                straightcompatible = false;
+            }
+
+            if(straightcompatible && dataSuits.Distinct().Count() == 1) {
+                straightboost = true;
+            }
 
             // logic for pairs 1-4
             if (!(dataNumbers.Distinct().Count() == 1)) {
@@ -187,10 +243,9 @@ public class Player : MonoBehaviour
                     }
                 }
 
-                // pretty buggy straightboost
-                //if(straightboost) {
-                //    score *= 2;
-                //}
+                if(straightboost) {
+                    score *= 1.5f;
+                }
 
                 if(checkJQK == "JQK" && CanJQK) { score = JQKPair; CanJQK = false; }
                 if(score > maxscore) { score = maxscore; }
@@ -218,24 +273,34 @@ public class Player : MonoBehaviour
                     target = "player1";
                 }
 
-                // change target with reverse mechanic
-                // find if other player can use mechanic
-                // if so, switch turn without adding cards just yet
-                // if they decide to use the mechanic, give cards to original attacking player and don't switch turns
-                // if not, give them the cards and switch turns normally
-                // special information thing potentially
-
-                for(int i = 0; i < score; i++)
+                bool canreverse = false;
+                if (target == "player1")
                 {
-                    if(target == "player1")
+                    canreverse = player1.CanReverse(SelectedCards, dataNumbers, dataSuits);
+                }
+                else if (target == "player2")
+                {
+                    canreverse = player2.CanReverse(SelectedCards, dataNumbers, dataSuits);
+                } else {
+                    print("no target");
+                }
+
+                if (!canreverse)
+                {
+                    for (int i = 0; i < score; i++)
                     {
-                        player1.AddCard(ManagerOfDeck.MakeCard());
-                    } else if(target == "player2")
-                    {
-                        player2.AddCard(ManagerOfDeck.MakeCard());
-                    } else
-                    {
-                        print("no target");
+                        if (target == "player1")
+                        {
+                            player1.AddCard(ManagerOfDeck.MakeCard());
+                        }
+                        else if (target == "player2")
+                        {
+                            player2.AddCard(ManagerOfDeck.MakeCard());
+                        }
+                        else
+                        {
+                            print("no target");
+                        }
                     }
                 }
 
@@ -293,21 +358,18 @@ public class Player : MonoBehaviour
             Digit2P2.value = digdig2;
         }
 
-        print("it's " + PlayerParty3.CurrentTurn);
         if(PlayerParty3.CurrentTurn == false)
         {
             TurnIndi1.SetActive(true);
             TurnIndi2.SetActive(false);
             PlayHand1.SetActive(true);
             PlayHand2.SetActive(false);
-            print("it's player 1");
         } else
         {
             TurnIndi1.SetActive(false);
             TurnIndi2.SetActive(true);
             PlayHand1.SetActive(false);
             PlayHand2.SetActive(true);
-            print("it's player 2, the sequel");
         }
     }
 }
