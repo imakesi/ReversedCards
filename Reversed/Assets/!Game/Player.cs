@@ -31,6 +31,8 @@ public class Player : MonoBehaviour
 
     private bool straightboost = false;
 
+    public int cardsDue = 0;
+
     public DigitScript Digit1P1;
     public DigitScript Digit2P1;
     public DigitScript Digit1P2;
@@ -45,7 +47,11 @@ public class Player : MonoBehaviour
     public DeckManager ManagerOfDeck;
     public Player player1;
     public Player player2;
-    private void Start() {
+
+    private GameObject Title1;
+    private GameObject Title2;
+
+    private void Awake() {
         Digit1P1 = GameObject.Find("Digit 1 P1").GetComponent<DigitScript>();
         Digit2P1 = GameObject.Find("Digit 2 P1").GetComponent<DigitScript>();
         Digit1P2 = GameObject.Find("Digit 1 P2").GetComponent<DigitScript>();
@@ -56,7 +62,15 @@ public class Player : MonoBehaviour
         PlayHand1 = GameObject.Find("PlayHand1");
         PlayHand2 = GameObject.Find("PlayHand2");
 
+        Title1 = GameObject.Find("Title1");
+        Title2 = GameObject.Find("Title2");
+
         PlayerParty3 = GameObject.Find("Manager").GetComponent<ThirdPartyPlayer>();
+    }
+
+    private void Start() {
+        Title1.SetActive(false);
+        Title2.SetActive(false);
     }
 
     public void AddCard(GameObject card) {
@@ -94,7 +108,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    public bool CanReverse(List<GameObject> cards, List<int> datanum, List<int> datasuit) {
+    public bool CanReverse(List<GameObject> cards) {
         // change target with reverse mechanic
         // find if other player can use mechanic
         // if so, switch turn without adding cards just yet
@@ -104,6 +118,17 @@ public class Player : MonoBehaviour
 
         bool canReverse = false;
         string mode = "";
+
+        List<int> datanum = new List<int>();
+        List<int> datasuit = new List<int>();
+
+        for(int i = 0; i < cards.Count; i++) {
+            SpriteRenderer currenderer = cards[i].GetComponentInChildren<SpriteRenderer>();
+            int dataNumber = Int32.Parse(currenderer.sprite.name.Split(".")[0]);
+            int dataSuit = Int32.Parse(currenderer.sprite.name.Split(".")[1]);
+            datanum.Add(dataNumber);
+            datasuit.Add(dataSuit);
+        }
 
         // logic for straights
         bool straightcompatible = true;
@@ -127,20 +152,39 @@ public class Player : MonoBehaviour
 
         if (datanum.Distinct().Count() == 1) {
             mode = "match";
-        } else if(datasuit.Distinct().Count() == 1 &&
-                  cards.Count == 5) {
-            mode = "flush";
         } else if(straightcompatible) {
             mode = "straight";
         }
 
+        GameObject currentcard;
         for (int i = 0; i < cards.Count; i++) {
+            currentcard = cards[i];
+            SpriteRenderer currenderer = currentcard.GetComponentInChildren<SpriteRenderer>();
+            int dataNumber = Int32.Parse(currenderer.sprite.name.Split(".")[0]);
+            int dataSuit = Int32.Parse(currenderer.sprite.name.Split(".")[1]);
+            
+            print(dataNumber + " " + dataSuit); // DEBUG
+
             if(mode == "match") {
                 // check compatibility
-            } else if(mode == "flush") {
-                // maybe include reversing, maybe not
+                if(datanum.Distinct().First() == dataNumber) {
+                    canReverse = true;
+                    break;
+                }
             } else if(mode == "straight") {
                 // check if you can add on without breaking the straight
+                GameObject first = cards.First();
+                GameObject last = cards.Last();
+                SpriteRenderer firstrenderer = first.GetComponentInChildren<SpriteRenderer>();
+                SpriteRenderer lastrenderer = last.GetComponentInChildren<SpriteRenderer>();
+                int firstNumber = Int32.Parse(firstrenderer.sprite.name.Split(".")[0]);
+                int lastNumber = Int32.Parse(lastrenderer.sprite.name.Split(".")[0]);
+
+                if(dataNumber == firstNumber-1 ||
+                   dataNumber == lastNumber+1) {
+                    canReverse = true;
+                    break;
+                }
             } else {
                 print("no mode");
             }
@@ -161,13 +205,9 @@ public class Player : MonoBehaviour
             List<int> dataNumbers = new List<int>();
             List<int> dataSuits = new List<int>();
             for (int i = 0; i < SelectedCards.Count; i++) {
-                //currentcard = SelectedCards[i];
-                //CardIMGManager curmanage = currentcard.GetComponentInChildren<CardIMGManager>();
-                //CardData curdata = curmanage.CardObj;
-
-                // get texture?
+                // get texture and information
                 currentcard = SelectedCards[i];
-                SpriteRenderer currenderer = currentcard.GetComponentInChildren<SpriteRenderer>(); // error, destroyed already
+                SpriteRenderer currenderer = currentcard.GetComponentInChildren<SpriteRenderer>();
                 int dataNumber = Int32.Parse(currenderer.sprite.name.Split(".")[0]);
                 int dataSuit = Int32.Parse(currenderer.sprite.name.Split(".")[1]);
                 dataNumbers.Add(dataNumber);
@@ -213,11 +253,7 @@ public class Player : MonoBehaviour
                 string checkJQK = "";
                 float score = 0;
                 for (int i = 0; i < SelectedCards.Count; i++) {
-                    //currentcard = SelectedCards[i];
-                    //CardIMGManager curmanage = currentcard.GetComponentInChildren<CardIMGManager>();
-                    //CardData curdata = curmanage.CardObj;
-
-                    // get texture?
+                    // get texture and info
                     currentcard = SelectedCards[i];
                     SpriteRenderer currenderer = currentcard.GetComponentInChildren<SpriteRenderer>();
                     int dataNumber = Int32.Parse(currenderer.sprite.name.Split(".")[0]);
@@ -258,29 +294,25 @@ public class Player : MonoBehaviour
                 // add cards to the other side
                 if (CompareTag("Player1"))
                 {
-                    //for (int i = 0; i < score; i++)
-                    //{
-                    //    player2.AddCard(ManagerOfDeck.MakeCard());
-                    //}
                     target = "player2";
                 }
                 else if (CompareTag("Player2"))
                 {
-                    //for (int i = 0; i < score; i++)
-                    //{
-                    //    player1.AddCard(ManagerOfDeck.MakeCard());
-                    //}
                     target = "player1";
                 }
 
                 bool canreverse = false;
-                if (target == "player1")
-                {
-                    canreverse = player1.CanReverse(SelectedCards, dataNumbers, dataSuits);
+                if (target == "player1") {
+                    canreverse = player1.CanReverse(player1.SelectedCards);
+                    if(canreverse) {
+                        Title1.SetActive(true);
+                    }
                 }
-                else if (target == "player2")
-                {
-                    canreverse = player2.CanReverse(SelectedCards, dataNumbers, dataSuits);
+                else if (target == "player2") {
+                    canreverse = player2.CanReverse(player2.SelectedCards);
+                    if(canreverse) {
+                        Title2.SetActive(true); 
+                    }
                 } else {
                     print("no target");
                 }
@@ -312,8 +344,6 @@ public class Player : MonoBehaviour
                 for (int i = 0; i < SelectedCards.Count; i++)
                 {
                     CardScript cardScript = SelectedCards[i].GetComponent<CardScript>();
-                    //cardScript.image.transform.position = cardScript.ogpos.position;
-                    //cardScript.transform.position = cardScript.ogpos.position;
                     Hand.Remove(SelectedCards[i]);
                     destroyLater.Add(SelectedCards[i]);
                     GameObject destroyThis = cardScript.gameObject;
