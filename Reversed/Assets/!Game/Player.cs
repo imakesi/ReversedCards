@@ -130,6 +130,14 @@ public class Player : MonoBehaviour
             datasuit.Add(dataSuit);
         }
 
+        print(datanum.Count);
+        print(datasuit.Count);
+        for(int i = 0; i < datanum.Count; i++) {
+            print("DATANUM " + datanum[i]);
+        } for(int i = 0; i < datasuit.Count; i++) {
+            print("DATASUIT " + datasuit[i]);
+        }
+
         // logic for straights
         bool straightcompatible = true;
         int lastint = -1;
@@ -152,7 +160,7 @@ public class Player : MonoBehaviour
 
         if (datanum.Distinct().Count() == 1) {
             mode = "match";
-        } else if(straightcompatible) {
+        } if(straightcompatible) {
             mode = "straight";
         }
 
@@ -190,6 +198,7 @@ public class Player : MonoBehaviour
             }
         }
 
+        print("mode is " + mode);
         return canReverse;
     }
 
@@ -303,13 +312,13 @@ public class Player : MonoBehaviour
 
                 bool canreverse = false;
                 if (target == "player1") {
-                    canreverse = player1.CanReverse(player1.SelectedCards);
+                    canreverse = player1.CanReverse(player1.Hand);
                     if(canreverse) {
                         Title1.SetActive(true);
                     }
                 }
                 else if (target == "player2") {
-                    canreverse = player2.CanReverse(player2.SelectedCards);
+                    canreverse = player2.CanReverse(player2.Hand);
                     if(canreverse) {
                         Title2.SetActive(true); 
                     }
