@@ -7,6 +7,7 @@ using UnityEngine;
 using Unity.Mathematics;
 using UnityEngine.SceneManagement;
 using System.Net.Mail;
+using Unity.VisualScripting;
 
 public class Player : MonoBehaviour
 {
@@ -31,7 +32,7 @@ public class Player : MonoBehaviour
 
     private bool straightboost = false;
 
-    public int cardsDue = 0;
+    public float cardsDue = 0;
 
     public DigitScript Digit1P1;
     public DigitScript Digit2P1;
@@ -50,6 +51,8 @@ public class Player : MonoBehaviour
 
     private GameObject Title1;
     private GameObject Title2;
+    public bool PublicCanReverse = false;
+    public List<int> PublicReversableNumbers = new List<int>();
 
     private void Awake() {
         Digit1P1 = GameObject.Find("Digit 1 P1").GetComponent<DigitScript>();
@@ -108,54 +111,65 @@ public class Player : MonoBehaviour
         }
     }
 
-    public bool CanReverse(List<GameObject> cards) {
-        // change target with reverse mechanic
-        // find if other player can use mechanic
-        // if so, switch turn without adding cards just yet
-        // if they decide to use the mechanic, give cards to original attacking player and don't switch turns
-        // if not, give them the cards and switch turns normally
-        // special information thing potentially
+    private float ScoreHand(List<GameObject> cards) {
+        string checkJQK = "";
+        float score = 0;
+        for (int i = 0; i < cards.Count; i++) {
+            GameObject currentcard = cards[i];
+            SpriteRenderer currenderer = currentcard.GetComponentInChildren<SpriteRenderer>();
+            int dataNumber = Int32.Parse(currenderer.sprite.name.Split(".")[0]);
+
+            if(dataNumber == 11) { checkJQK += "J"; }
+            if(dataNumber == 12) { checkJQK += "Q"; }
+            if(dataNumber == 13) { checkJQK += "K"; }
+
+            if (dataNumber < 11 && dataNumber > 1)
+            {
+                // 2-10
+                score += RegularCard;
+            }
+            else if (dataNumber > 10)
+            {
+                // face card
+                score += FaceCard;
+            }
+            else if (dataNumber == 1)
+            {
+                // ace
+                score += AceCard;
+            }
+        }
+
+        if(straightboost) {
+            score *= 1.5f;
+        }
+
+        if(checkJQK == "JQK" && CanJQK) { score = JQKPair; CanJQK = false; }
+        if(score > maxscore) { score = maxscore; }
+
+        score = MathF.Ceiling(score);
+
+        return score;
+    }
+
+    public (bool, List<int>) CanReverse(List<GameObject> cards, List<GameObject> cards2, List<int> datanum) {
+        List<int> reversableNums = new List<int>();
+        PublicReversableNumbers.Clear();
 
         bool canReverse = false;
         string mode = "";
 
-        List<int> datanum = new List<int>();
-        List<int> datasuit = new List<int>();
-
-        for(int i = 0; i < cards.Count; i++) {
-            SpriteRenderer currenderer = cards[i].GetComponentInChildren<SpriteRenderer>();
-            int dataNumber = Int32.Parse(currenderer.sprite.name.Split(".")[0]);
-            int dataSuit = Int32.Parse(currenderer.sprite.name.Split(".")[1]);
-            datanum.Add(dataNumber);
-            datasuit.Add(dataSuit);
-        }
-
-        print(datanum.Count);
-        print(datasuit.Count);
-        for(int i = 0; i < datanum.Count; i++) {
-            print("DATANUM " + datanum[i]);
-        } for(int i = 0; i < datasuit.Count; i++) {
-            print("DATASUIT " + datasuit[i]);
-        }
-
         // logic for straights
         bool straightcompatible = true;
-        int lastint = -1;
-        for (int i = 0; i < datanum.Count; i++)
-        {
-            if (lastint != -1)
-            {
-                if (!(datanum[i] == lastint - 1 ||
-                    datanum[i] == lastint + 1))
-                {
-                    straightcompatible = false;
-                }
-            }
-            lastint = datanum[i];
-        }
-        if (SelectedCards.Count < 3)
-        {
+        if(datanum.Count < 3 || datanum.Count > 5) {
             straightcompatible = false;
+        }
+        datanum.Sort();
+        for (int i = 1; i < datanum.Count; i++) {
+            if (datanum[i] != datanum[i - 1] + 1) {
+                straightcompatible = false;
+                break;
+            }
         }
 
         if (datanum.Distinct().Count() == 1) {
@@ -169,44 +183,68 @@ public class Player : MonoBehaviour
             currentcard = cards[i];
             SpriteRenderer currenderer = currentcard.GetComponentInChildren<SpriteRenderer>();
             int dataNumber = Int32.Parse(currenderer.sprite.name.Split(".")[0]);
-            int dataSuit = Int32.Parse(currenderer.sprite.name.Split(".")[1]);
-            
-            print(dataNumber + " " + dataSuit); // DEBUG
 
             if(mode == "match") {
                 // check compatibility
                 if(datanum.Distinct().First() == dataNumber) {
                     canReverse = true;
+                    reversableNums.Add(datanum.Distinct().First());
                     break;
                 }
             } else if(mode == "straight") {
                 // check if you can add on without breaking the straight
-                GameObject first = cards.First();
-                GameObject last = cards.Last();
+                GameObject first = cards2.First();
+                GameObject last = cards2.Last();
                 SpriteRenderer firstrenderer = first.GetComponentInChildren<SpriteRenderer>();
                 SpriteRenderer lastrenderer = last.GetComponentInChildren<SpriteRenderer>();
                 int firstNumber = Int32.Parse(firstrenderer.sprite.name.Split(".")[0]);
                 int lastNumber = Int32.Parse(lastrenderer.sprite.name.Split(".")[0]);
 
-                if(dataNumber == firstNumber-1 ||
-                   dataNumber == lastNumber+1) {
+                int debug1 = firstNumber-1;
+                int debug2 = lastNumber+1;
+                print("DEBUG straight" + debug1 + " AND " + debug2);
+
+                if(dataNumber == firstNumber-1) {
                     canReverse = true;
+                    reversableNums.Add(firstNumber-1);
+                    break;
+                } else if(dataNumber == lastNumber+1) {
+                    canReverse = true;
+                    reversableNums.Add(lastNumber+1);
                     break;
                 }
-            } else {
-                print("no mode");
             }
         }
 
-        print("mode is " + mode);
-        return canReverse;
+        if(cards2.Count >= 5) {
+            canReverse = false;
+        }
+
+        if(canReverse) {
+            float score = ScoreHand(cards2);
+            cardsDue += score;
+        }
+
+        return (canReverse, reversableNums);
     }
 
     public void PlayHand() {
 
+        bool reversecompatible = false;
         if (PlayerParty3.CurrentTurn == false && CompareTag("Player1") ||
             PlayerParty3.CurrentTurn == true && CompareTag("Player2")) {
-            // if our turn, then use our selectedcards
+            
+            if(PublicCanReverse) {
+                reversecompatible = true;
+                for(int i = 0; i < SelectedCards.Count; i++) {
+                    SpriteRenderer currenderer = SelectedCards[i].GetComponentInChildren<SpriteRenderer>();
+                    int datanum = Int32.Parse(currenderer.sprite.name.Split(".")[0]);
+                    if(!PublicReversableNumbers.Contains(datanum)) {
+                        reversecompatible = false;
+                    }
+                }
+            }
+
             bool compatible = true;
             bool straightcompatible = true;
             GameObject currentcard;
@@ -256,47 +294,13 @@ public class Player : MonoBehaviour
                 compatible = false;
             }
 
-            if (compatible || straightcompatible || flushcompatible) {
+            if (compatible || straightcompatible || flushcompatible || reversecompatible) {
                 // score the played hand
 
-                string checkJQK = "";
-                float score = 0;
-                for (int i = 0; i < SelectedCards.Count; i++) {
-                    // get texture and info
-                    currentcard = SelectedCards[i];
-                    SpriteRenderer currenderer = currentcard.GetComponentInChildren<SpriteRenderer>();
-                    int dataNumber = Int32.Parse(currenderer.sprite.name.Split(".")[0]);
+                Title1.SetActive(false);
+                Title2.SetActive(false);
 
-                    if(dataNumber == 11) { checkJQK += "J"; }
-                    if(dataNumber == 12) { checkJQK += "Q"; }
-                    if(dataNumber == 13) { checkJQK += "K"; }
-
-                    if (dataNumber < 11 && dataNumber > 1)
-                    {
-                        // 2-10
-                        score += RegularCard;
-                    }
-                    else if (dataNumber > 10)
-                    {
-                        // face card
-                        score += FaceCard;
-                    }
-                    else if (dataNumber == 1)
-                    {
-                        // ace
-                        score += AceCard;
-                    }
-                }
-
-                if(straightboost) {
-                    score *= 1.5f;
-                }
-
-                if(checkJQK == "JQK" && CanJQK) { score = JQKPair; CanJQK = false; }
-                if(score > maxscore) { score = maxscore; }
-
-                score = MathF.Ceiling(score);
-                print($"scored hand: {score}");
+                float score = ScoreHand(SelectedCards);
 
                 string target = null;
 
@@ -310,20 +314,43 @@ public class Player : MonoBehaviour
                     target = "player1";
                 }
 
+                (bool, List<int>) functionResult;
                 bool canreverse = false;
                 if (target == "player1") {
-                    canreverse = player1.CanReverse(player1.Hand);
+                    functionResult = player1.CanReverse(player1.Hand, SelectedCards, dataNumbers);
+                    canreverse = functionResult.Item1;
                     if(canreverse) {
                         Title1.SetActive(true);
+                        player1.PublicCanReverse = true;
+                        player1.PublicReversableNumbers = functionResult.Item2;
+                    } else {
+                        player1.PublicCanReverse = false;
                     }
                 }
                 else if (target == "player2") {
-                    canreverse = player2.CanReverse(player2.Hand);
+                    functionResult = player2.CanReverse(player2.Hand, SelectedCards, dataNumbers);
+                    canreverse = functionResult.Item1;
                     if(canreverse) {
                         Title2.SetActive(true); 
+                        player2.PublicCanReverse = true;
+                        player2.PublicReversableNumbers = functionResult.Item2;
+                    } else {
+                        player2.PublicCanReverse = false;
                     }
                 } else {
                     print("no target");
+                }
+
+                if(reversecompatible) {
+                    // we ARE reversing
+                    score += cardsDue;
+                    cardsDue = 0;
+                } else if(PublicCanReverse) {
+                    // we CAN reverse and AREN'T
+                    // note that canreverse is for our target
+                    for(int i = 0; i < cardsDue; i++) {
+                        AddCard(ManagerOfDeck.MakeCard());
+                    }
                 }
 
                 if (!canreverse)
@@ -356,7 +383,6 @@ public class Player : MonoBehaviour
                     Hand.Remove(SelectedCards[i]);
                     destroyLater.Add(SelectedCards[i]);
                     GameObject destroyThis = cardScript.gameObject;
-                    if(destroyThis == null) { print("card " + i + " is a spoooky ghost"); }
                     Destroy(destroyThis);
                 }
 
