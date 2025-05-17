@@ -21,6 +21,8 @@ public class Player : MonoBehaviour
 
     [SerializeField] private KeyCode PageNext, PageLast;
 
+    SoundScript soundScript;
+
     public int maxscore = 8; // the maximum score you can get
 
     public float RegularCard = 0.5f;
@@ -69,6 +71,7 @@ public class Player : MonoBehaviour
         Title2 = GameObject.Find("Title2");
 
         PlayerParty3 = GameObject.Find("Manager").GetComponent<ThirdPartyPlayer>();
+        soundScript = GameObject.Find("Manager").GetComponent<SoundScript>();
     }
 
     private void Start() {
@@ -200,10 +203,6 @@ public class Player : MonoBehaviour
                 int firstNumber = Int32.Parse(firstrenderer.sprite.name.Split(".")[0]);
                 int lastNumber = Int32.Parse(lastrenderer.sprite.name.Split(".")[0]);
 
-                int debug1 = firstNumber-1;
-                int debug2 = lastNumber+1;
-                print("DEBUG straight" + debug1 + " AND " + debug2);
-
                 if(dataNumber == firstNumber-1) {
                     canReverse = true;
                     reversableNums.Add(firstNumber-1);
@@ -323,6 +322,7 @@ public class Player : MonoBehaviour
                         Title1.SetActive(true);
                         player1.PublicCanReverse = true;
                         player1.PublicReversableNumbers = functionResult.Item2;
+                        soundScript.PlayReversed();
                     } else {
                         player1.PublicCanReverse = false;
                     }
@@ -334,6 +334,7 @@ public class Player : MonoBehaviour
                         Title2.SetActive(true); 
                         player2.PublicCanReverse = true;
                         player2.PublicReversableNumbers = functionResult.Item2;
+                        soundScript.PlayReversed();
                     } else {
                         player2.PublicCanReverse = false;
                     }
